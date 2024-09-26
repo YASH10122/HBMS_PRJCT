@@ -11,13 +11,19 @@ function RegisterPage() {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
+    profileImage: null,
   });
 
+  console.log(formData);
+  
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormData({
       ...formData,
       [name]: value,
+      [name]: name === "profileImage" ? files[0] : value
     });
   };
 
@@ -95,15 +101,38 @@ function RegisterPage() {
           <input
             placeholder="Confirm Password"
             name="confirmPassword"
-            // onChange={handleChange}
+            value={formData.confirmPassword}
+            onChange={handleChange}
             type="password"
             required
           />
+          <input 
+            id="image"
+            type="file" 
+            name="profileImage" 
+            accept="image/*" 
+            style={{display:"none"}}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="image">
+              <img src="/assets/addImage.png" alt="add profile photo"/>
+              <p>Upload the photo</p>
+          </label>
+          
+
+          {/* image select kare teni url bnave */}
+          {formData.profileImage &&(
+            <img src={URL.createObjectURL(formData.profileImage)}
+            alt="profile photo"
+            style={{maxWidth: "80px"}}
+            />
+          )}
 
           {!passwordMatch && (
             <p style={{ color: "red" }}>Passwords are not matched!</p>
           )}
-
+          
           <button type="submit">REGISTER</button>
         </form>
         <a href="/login">Already have an account? Log In Here</a>
