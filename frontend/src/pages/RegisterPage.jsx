@@ -5,7 +5,6 @@ import "../styles/Register.scss";
 import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,7 +26,44 @@ function RegisterPage() {
     });
   };
 
+    
+  console.log(formData);
+
   const [passwordMatch, setPasswordMatch] = useState(true);
+
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e)  => {
+    e.preventDefault()
+    try{
+      const register_form = new FormData()
+    
+      for(var key in FormData) {
+        register_form.append(key, formData[key])
+      }
+  
+    const response = await fetch("http://localhost:1012/auth/register", {
+      method: "POST",
+      body : register_form
+    })
+  
+    if(response.ok){
+      navigate("/login")
+    }
+    } catch(err){
+      console.log("regristration failed", err.message);
+      
+    }
+
+    // if(formData.password === formData.confirmPassword) {
+    //   setPasswordMatch(true)
+    // }else {
+    //   setPasswordMatch(false)
+    // }
+  }
+
+
+  /*const [passwordMatch, setPasswordMatch] = useState(true);
 
   useEffect(() => {
     setPasswordMatch(
@@ -62,7 +98,7 @@ function RegisterPage() {
     } catch (error) {
       throw new Error(error);
     }
-  };
+  };*/
 
   return (
     <div className="register">
@@ -106,39 +142,39 @@ function RegisterPage() {
             type="password"
             required
           />
-          <input 
-            id="image"
-            type="file" 
-            name="profileImage" 
-            accept="image/*" 
-            style={{display:"none"}}
-            onChange={handleChange}
-            required
-          />
-          <label htmlFor="image">
-              <img src="/assets/addImage.png" alt="add profile photo"/>
-              <p>Upload the photo</p>
-          </label>
-          
-
-          {/* image select kare teni url bnave */}
-          {formData.profileImage &&(
-            <img src={URL.createObjectURL(formData.profileImage)}
-            alt="profile photo"
-            style={{maxWidth: "80px"}}
-            />
-          )}
 
           {!passwordMatch && (
             <p style={{ color: "red" }}>Passwords are not matched!</p>
           )}
+
+          <input
+            id="image"
+            type="file"
+            name="profileImage"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleChange}
+            required
+          />
           
-          <button type="submit">REGISTER</button>
+          <label htmlFor="image">
+            <img src="/assets/addImage.png" alt="add profile photo" />
+            <p>Upload Your Photo</p>
+          </label>
+
+          {formData.profileImage && (
+            <img
+              src={URL.createObjectURL(formData.profileImage)}
+              alt="profile photo"
+              style={{ maxWidth: "80px" }}
+            />
+          )}
+          <button type="submit" disabled={!passwordMatch}>REGISTER</button>
         </form>
         <a href="/login">Already have an account? Log In Here</a>
       </div>
     </div>
   );
 }
-
+///ok
 export default RegisterPage;
